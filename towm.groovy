@@ -15,7 +15,7 @@ definition(
 
 preferences {
 	section("Turn off when there's movement..."){
-		input "motion1", "capability.motionSensor", title: "Where?", multiple: true
+		input "motions", "capability.motionSensor", title: "Where?", multiple: true
 	}
 	section("And on when there's been no movement for..."){
 		input "minutes1", "number", title: "Minutes?"
@@ -26,30 +26,30 @@ preferences {
 }
 
 
-def installed()
-{
-	subscribe(motion1, "motion", motionHandler)
-	schedule("0 * * * * ?", "scheduleCheck")
+def installed() {
+   initialized()
 }
 
-def updated()
-{
+def updated() {
 	unsubscribe()
-	subscribe(motion1, "motion", motionHandler)
-	unschedule()
-	schedule("0 * * * * ?", "scheduleCheck")
+    initialized()
+}
+
+def initialized() {
+    subscribe(motions, "motion", motionHandler)
 }
 
 def motionHandler(evt) {
-	log.debug "$evt.name: $evt.value"
+//	log.debug "$evt.name: $evt.value"
 
 	if (evt.value == "active") {
-		log.debug "turning on devices"
+//		log.debug "turning off devices"
 		switches.off()
 		state.inactiveAt = null
 	} else if (evt.value == "inactive") {
 		if (!state.inactiveAt) {
 			state.inactiveAt = now()
+            runIn(minutes1 * 60, "scheduleCheck", [overwrite: false])
 		}
 	}
 }
@@ -60,12 +60,12 @@ def scheduleCheck() {
 		def elapsed = now() - state.inactiveAt
 		def threshold = 1000 * 60 * minutes1
 		if (elapsed >= threshold) {
-			log.debug "turning off lights"
+//			log.debug "turning off lights"
 			switches.on()
 			state.inactiveAt = null
 		}
 		else {
-			log.debug "${elapsed / 1000} sec since motion stopped"
+//			log.debug "${elapsed / 1000} sec since motion stopped"
 		}
 	}
 }
