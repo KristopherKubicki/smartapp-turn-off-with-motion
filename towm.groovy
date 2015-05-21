@@ -8,8 +8,8 @@ definition(
     author: "Kristopher Kubicki",
     description: "Turns off a device if there is motion",
     category: "My Apps",
-    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
+    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Meta/light_motion-outlet.png",
+    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Meta/light_motion-outlet@2x.png")
 
 
 
@@ -55,7 +55,7 @@ def motionHandler(evt) {
 }
 
 def scheduleCheck() {
-	log.debug "schedule check, ts = ${state.inactiveAt}"
+//	log.debug "schedule check, ts = ${state.inactiveAt}"
 	if (state.inactiveAt) {
 		def elapsed = now() - state.inactiveAt
 		def threshold = 1000 * 60 * minutes1
